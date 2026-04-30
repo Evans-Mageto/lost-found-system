@@ -13,19 +13,9 @@ const app = express();
 // CORS - allow all vercel deployments and localhost
 app.use(cors({
   origin: function(origin, callback) {
-    const allowed = [
-      process.env.CLIENT_URL,
-      process.env.ADMIN_URL,
-      'http://localhost:5173',
-      'http://localhost:5174',
-    ];
-    // Allow requests with no origin (mobile apps, curl, etc)
     if (!origin) return callback(null, true);
-    // Allow any vercel.app subdomain
     if (origin.endsWith('.vercel.app')) return callback(null, true);
-    // Allow exact matches
-    if (allowed.includes(origin)) return callback(null, true);
-    return callback(null, true); // temporary: allow all during testing
+    return callback(null, true);
   },
   credentials: true,
 }));
@@ -45,6 +35,21 @@ app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'Lost & Found API running' }));
+
+// DB test route
+app.get('/api/dbtest', async (req, res) => {
+  const pool = require('./db');
+  try {
+    const result = await pool.query('SELECT NOW() as time, COUNT(*) as user_count FROM users');
+    res.json({
+      connected: true,
+      time: result.rows[0].time,
+      user_count: result.rows[0].user_count
+    });
+  } catch (err) {
+    res.status(500).json({ connected: false, error: err.message });
+  }
+});
 
 // 404
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
