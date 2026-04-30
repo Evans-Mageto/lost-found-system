@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 const CATEGORIES = ['Electronics', 'Clothing', 'Books', 'Documents', 'Jewelry', 'Bags', 'Keys', 'Sports', 'Other'];
 
@@ -9,14 +10,14 @@ function ItemCard({ item }) {
     <Link to={`/items/${item.id}`} className="item-card">
       {item.image_url
         ? <img src={item.image_url} alt={item.item_name} className="item-card-img" />
-        : <div className="item-card-img-placeholder">📦</div>
+        : <div className="item-card-img-placeholder"><Icon name="package" size={36} /></div>
       }
       <div className="item-card-body">
         <div className="item-card-title">{item.item_name}</div>
         <div className="item-card-meta">
-          <span>📍 {item.location}</span>
-          <span>🗓 {new Date(item.date_lost_or_found).toLocaleDateString()}</span>
-          <span>👤 {item.reporter_name}</span>
+          <span><Icon name="map" size={14} /> {item.location}</span>
+          <span><Icon name="calendar" size={14} /> {new Date(item.date_lost_or_found).toLocaleDateString()}</span>
+          <span><Icon name="user" size={14} /> {item.reporter_name}</span>
         </div>
       </div>
       <div className="item-card-footer">
@@ -45,10 +46,10 @@ export default function SearchItems() {
     date_to: '',
   });
 
-  const fetchItems = useCallback(async (p = 1) => {
+  const fetchItems = useCallback(async (p = 1, activeFilters = filters) => {
     setLoading(true);
     try {
-      const data = await api.getItems({ ...filters, page: p, limit: 12 });
+      const data = await api.getItems({ ...activeFilters, page: p, limit: 12 });
       setResults(data.items);
       setTotal(data.total);
       setPages(data.pages);
@@ -58,7 +59,12 @@ export default function SearchItems() {
 
   useEffect(() => { fetchItems(page); }, [page]);
 
-  const handleSearch = (e) => { e.preventDefault(); setPage(1); fetchItems(1); };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1);
+    setSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
+    fetchItems(1, filters);
+  };
 
   const setFilter = (key, val) => setFilters(prev => ({ ...prev, [key]: val }));
 
@@ -120,8 +126,11 @@ export default function SearchItems() {
           <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem' }}>
             <button type="submit" className="btn btn-primary">Search</button>
             <button type="button" className="btn btn-secondary" onClick={() => {
-              setFilters({ search: '', type: '', category: '', location: '', status: '', date_from: '', date_to: '' });
-              setPage(1); fetchItems(1);
+              const nextFilters = { search: '', type: '', category: '', location: '', status: '', date_from: '', date_to: '' };
+              setFilters(nextFilters);
+              setSearchParams({});
+              setPage(1);
+              fetchItems(1, nextFilters);
             }}>Clear</button>
           </div>
         </form>
@@ -131,7 +140,7 @@ export default function SearchItems() {
         <div className="loading"><div className="spinner"></div></div>
       ) : results.length === 0 ? (
         <div className="empty">
-          <div className="empty-icon">🔍</div>
+          <div className="empty-icon"><Icon name="search" size={24} /></div>
           <h3>No items found</h3>
           <p>Try adjusting your search filters</p>
         </div>

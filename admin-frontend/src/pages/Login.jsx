@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { useNavigate } from 'react-router-dom';
+import Icon from '../components/Icon';
 
 export default function Login() {
   const { login } = useAdminAuth();
@@ -23,7 +24,9 @@ export default function Login() {
     }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🔐</div>
+          <div className="brand-mark" style={{ margin: '0 auto 0.75rem', color: 'var(--accent)' }}>
+            <Icon name="shield" size={20} />
+          </div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 700 }}>Admin Login</h1>
           <p style={{ color: 'var(--text2)', marginTop: '0.4rem', fontSize: '0.875rem' }}>Campus Lost & Found Management</p>
         </div>

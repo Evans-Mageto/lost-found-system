@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../api';
+import Icon from '../components/Icon';
 
 function Modal({ claim, onClose, onApprove, onReject }) {
   const [response, setResponse] = useState('');
@@ -21,30 +22,35 @@ function Modal({ claim, onClose, onApprove, onReject }) {
       <div className="modal">
         <h2>Review Claim #{claim.id}</h2>
 
-        <div style={{ background: 'var(--bg3)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text2)', marginBottom: '0.3rem', textTransform: 'uppercase', fontWeight: 600 }}>Item</div>
+        <div className="review-grid">
+          <div className="review-panel">
+            <div className="review-label">Item</div>
           <div style={{ fontWeight: 600, marginBottom: '0.2rem' }}>{claim.item_name}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text2)' }}>{claim.type} · {claim.category} · {claim.location}</div>
-        </div>
+          </div>
 
-        <div style={{ background: 'var(--bg3)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text2)', marginBottom: '0.3rem', textTransform: 'uppercase', fontWeight: 600 }}>Claimant</div>
+          <div className="review-panel">
+            <div className="review-label">Claimant</div>
           <div style={{ fontWeight: 500 }}>{claim.claimant_name}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text2)' }}>{claim.claimant_email}</div>
+          </div>
         </div>
 
-        <div style={{ background: 'var(--bg3)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text2)', marginBottom: '0.3rem', textTransform: 'uppercase', fontWeight: 600 }}>Claim Message</div>
+        <div className="review-panel">
+          <div className="review-label">Claim Message</div>
           <div style={{ fontSize: '0.9rem' }}>{claim.claim_message}</div>
         </div>
 
-        <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: '#fcd34d', marginBottom: '0.3rem', textTransform: 'uppercase', fontWeight: 600 }}>Verification Answer</div>
+        <div className="review-panel" style={{ borderColor: '#f4d28a', background: '#fffaf0' }}>
+          <div className="review-label" style={{ color: 'var(--warning)' }}>Verification Answer</div>
           <div style={{ fontSize: '0.9rem' }}>{claim.verification_answer}</div>
         </div>
 
-        <div style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '1rem', marginBottom: '1.2rem' }}>
-          <div style={{ fontSize: '0.75rem', color: '#fca5a5', marginBottom: '0.3rem', textTransform: 'uppercase', fontWeight: 600 }}>🔒 Hidden Verification Details</div>
+        <div className="review-panel" style={{ borderColor: '#ffd2cf', background: '#fff8f7' }}>
+          <div className="review-label" style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <Icon name="lock" size={14} />
+            Hidden Verification Details
+          </div>
           <div style={{ fontSize: '0.9rem' }}>{claim.hidden_verification_details || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>Not provided</span>}</div>
         </div>
 
@@ -57,10 +63,12 @@ function Modal({ claim, onClose, onApprove, onReject }) {
 
         <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
           <button className="btn btn-success" onClick={() => handle('approve')} disabled={loading} style={{ flex: 1 }}>
-            ✅ Approve
+            <Icon name="check" size={16} />
+            Approve
           </button>
           <button className="btn btn-danger" onClick={() => handle('reject')} disabled={loading} style={{ flex: 1 }}>
-            ❌ Reject
+            <Icon name="x" size={16} />
+            Reject
           </button>
           <button className="btn btn-secondary" onClick={onClose} disabled={loading}>Cancel</button>
         </div>
@@ -127,7 +135,7 @@ export default function ClaimRequests() {
       {loading ? (
         <div className="loading"><div className="spinner"></div></div>
       ) : data.claims.length === 0 ? (
-        <div className="empty"><div className="icon">🏷️</div><p>No claims found.</p></div>
+        <div className="empty"><div className="icon"><Icon name="tag" size={24} /></div><p>No claims found.</p></div>
       ) : (
         <>
           <div className="table-wrap">

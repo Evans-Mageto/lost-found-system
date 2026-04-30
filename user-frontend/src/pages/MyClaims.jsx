@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 export default function MyClaims() {
   const [claims, setClaims] = useState([]);
@@ -21,7 +22,7 @@ export default function MyClaims() {
 
       {claims.length === 0 ? (
         <div className="empty">
-          <div className="empty-icon">🏷️</div>
+          <div className="empty-icon"><Icon name="tag" size={24} /></div>
           <h3>No claims yet</h3>
           <p>Browse items and submit a claim if you find yours.</p>
           <Link to="/search" className="btn btn-primary" style={{ marginTop: '1.5rem' }}>Browse Items</Link>

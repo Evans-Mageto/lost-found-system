@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { adminApi } from '../api';
+import Icon from '../components/Icon';
 
 const STATUSES = ['pending', 'matched', 'claimed', 'returned'];
 
@@ -14,10 +15,10 @@ export default function ManageItems() {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
 
-  const load = async (p = page) => {
+  const load = async (p = page, activeFilters = filters) => {
     setLoading(true);
     try {
-      const res = await adminApi.getItems({ ...filters, page: p, limit: 15 });
+      const res = await adminApi.getItems({ ...activeFilters, page: p, limit: 15 });
       setData(res);
     } catch (e) { setErr(e.message); }
     finally { setLoading(false); }
@@ -72,13 +73,18 @@ export default function ManageItems() {
           {STATUSES.map(s => <option key={s}>{s}</option>)}
         </select>
         <button type="submit" className="btn btn-primary">Filter</button>
-        <button type="button" className="btn btn-secondary" onClick={() => { setFilters({ search: '', type: '', status: '', category: '' }); setPage(1); load(1); }}>Clear</button>
+        <button type="button" className="btn btn-secondary" onClick={() => {
+          const nextFilters = { search: '', type: '', status: '', category: '' };
+          setFilters(nextFilters);
+          setPage(1);
+          load(1, nextFilters);
+        }}>Clear</button>
       </form>
 
       {loading ? (
         <div className="loading"><div className="spinner"></div></div>
       ) : data.items.length === 0 ? (
-        <div className="empty"><div className="icon">📦</div><p>No items found.</p></div>
+        <div className="empty"><div className="icon"><Icon name="package" size={24} /></div><p>No items found.</p></div>
       ) : (
         <>
           <div className="table-wrap">
@@ -132,7 +138,7 @@ export default function ManageItems() {
                           disabled={deleting === item.id}
                           onClick={() => handleDelete(item.id, item.item_name)}
                         >
-                          {deleting === item.id ? '...' : 'Del'}
+                          {deleting === item.id ? '...' : 'Delete'}
                         </button>
                       </div>
                     </td>

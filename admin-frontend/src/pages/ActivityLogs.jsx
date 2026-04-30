@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../api';
+import Icon from '../components/Icon';
 
 const ACTION_COLORS = {
   USER_REGISTERED: '#818cf8',
@@ -15,16 +16,16 @@ const ACTION_COLORS = {
 };
 
 const ACTION_ICONS = {
-  USER_REGISTERED: '👤',
-  ITEM_REPORTED: '📦',
-  CLAIM_SUBMITTED: '🏷️',
-  CLAIM_APPROVED: '✅',
-  CLAIM_REJECTED: '❌',
-  ITEM_DELETED: '🗑️',
-  ITEM_STATUS_UPDATED: '🔄',
-  USER_DELETED: '🗑️',
-  USER_DEACTIVATED: '⛔',
-  USER_ACTIVATED: '✅',
+  USER_REGISTERED: 'user',
+  ITEM_REPORTED: 'package',
+  CLAIM_SUBMITTED: 'tag',
+  CLAIM_APPROVED: 'check',
+  CLAIM_REJECTED: 'x',
+  ITEM_DELETED: 'trash',
+  ITEM_STATUS_UPDATED: 'refresh',
+  USER_DELETED: 'trash',
+  USER_DEACTIVATED: 'alert',
+  USER_ACTIVATED: 'check',
 };
 
 export default function ActivityLogs() {
@@ -56,7 +57,7 @@ export default function ActivityLogs() {
       {loading ? (
         <div className="loading"><div className="spinner"></div></div>
       ) : data.logs.length === 0 ? (
-        <div className="empty"><div className="icon">📋</div><p>No activity logged yet.</p></div>
+        <div className="empty"><div className="icon"><Icon name="activity" size={24} /></div><p>No activity logged yet.</p></div>
       ) : (
         <>
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -67,12 +68,12 @@ export default function ActivityLogs() {
                 transition: 'background 0.15s'
               }}>
                 <div style={{
-                  width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+                  width: '36px', height: '36px', borderRadius: '8px', flexShrink: 0,
                   background: `${ACTION_COLORS[log.action] || '#6b7280'}20`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1rem'
+                  color: ACTION_COLORS[log.action] || '#6b7280'
                 }}>
-                  {ACTION_ICONS[log.action] || '📌'}
+                  <Icon name={ACTION_ICONS[log.action] || 'activity'} size={17} />
                 </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>

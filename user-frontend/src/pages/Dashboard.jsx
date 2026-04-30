@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -26,8 +27,8 @@ export default function Dashboard() {
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>
       <div className="page-header">
-        <h1>Welcome, {user.full_name.split(' ')[0]} 👋</h1>
-        <p>Here's an overview of your activity</p>
+        <h1>Welcome, {user.full_name.split(' ')[0]}</h1>
+        <p>Your reports, claims, and next steps in one place.</p>
       </div>
 
       <div className="stats-grid">
@@ -46,20 +47,23 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <Link to="/report/lost" className="btn btn-danger" style={{ padding: '1rem', fontSize: '1rem', flexDirection: 'column', gap: '0.3rem' }}>
-          <span>😞 Report Lost Item</span>
+      <div className="action-grid">
+        <Link to="/report/lost" className="btn btn-danger" style={{ padding: '1rem', fontSize: '1rem' }}>
+          <Icon name="report" size={18} />
+          <span>Report Lost Item</span>
         </Link>
-        <Link to="/report/found" className="btn btn-success" style={{ padding: '1rem', fontSize: '1rem', flexDirection: 'column' }}>
-          <span>😊 Report Found Item</span>
+        <Link to="/report/found" className="btn btn-success" style={{ padding: '1rem', fontSize: '1rem' }}>
+          <Icon name="package" size={18} />
+          <span>Report Found Item</span>
         </Link>
         <Link to="/search" className="btn btn-secondary" style={{ padding: '1rem', fontSize: '1rem' }}>
-          🔍 Browse All Items
+          <Icon name="search" size={18} />
+          Browse All Items
         </Link>
       </div>
 
       {/* Recent reports preview */}
-      {reports.length > 0 && (
+      {reports.length > 0 ? (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h2 style={{ fontSize: '1.1rem' }}>Recent Reports</h2>
@@ -82,6 +86,12 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
+        </div>
+      ) : (
+        <div className="empty card">
+          <div className="empty-icon"><Icon name="report" size={24} /></div>
+          <h3>No reports yet</h3>
+          <p>Report a lost or found item to start tracking it here.</p>
         </div>
       )}
     </div>

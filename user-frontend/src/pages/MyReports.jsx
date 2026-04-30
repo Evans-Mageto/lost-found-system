@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 export default function MyReports() {
   const [reports, setReports] = useState([]);
@@ -28,14 +29,14 @@ export default function MyReports() {
           <p>{reports.length} total reports</p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <Link to="/report/lost" className="btn btn-danger btn-sm">+ Lost</Link>
-          <Link to="/report/found" className="btn btn-success btn-sm">+ Found</Link>
+          <Link to="/report/lost" className="btn btn-danger btn-sm"><Icon name="plus" size={14} /> Lost</Link>
+          <Link to="/report/found" className="btn btn-success btn-sm"><Icon name="plus" size={14} /> Found</Link>
         </div>
       </div>
 
       {reports.length === 0 ? (
         <div className="empty">
-          <div className="empty-icon">📋</div>
+          <div className="empty-icon"><Icon name="report" size={24} /></div>
           <h3>No reports yet</h3>
           <p>Start by reporting a lost or found item.</p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1.5rem' }}>

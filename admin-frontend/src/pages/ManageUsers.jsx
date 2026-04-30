@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../api';
 import { useAdminAuth } from '../context/AdminAuthContext';
+import Icon from '../components/Icon';
 
 export default function ManageUsers() {
   const { admin } = useAdminAuth();
@@ -129,7 +130,7 @@ export default function ManageUsers() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="empty"><div className="icon">👥</div><p>No users found.</p></div>
+        <div className="empty"><div className="icon"><Icon name="users" size={24} /></div><p>No users found.</p></div>
       )}
     </div>
   );

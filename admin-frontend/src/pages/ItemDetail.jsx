@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { adminApi } from '../api';
+import Icon from '../components/Icon';
 
 const STATUSES = ['pending', 'matched', 'claimed', 'returned'];
 
@@ -59,7 +60,7 @@ export default function ItemDetail() {
         <Link to="/items" style={{ color: 'var(--text2)', fontSize: '0.875rem' }}>← Back to Items</Link>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
           <button className="btn btn-danger btn-sm" onClick={handleDelete} disabled={deleting}>
-            {deleting ? 'Deleting...' : '🗑 Delete Item'}
+            {deleting ? 'Deleting...' : <><Icon name="trash" size={14} /> Delete Item</>}
           </button>
         </div>
       </div>
@@ -95,7 +96,10 @@ export default function ItemDetail() {
 
         <div style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '8px', padding: '1rem', marginBottom: '0.75rem' }}>
           <div style={{ fontSize: '0.75rem', color: '#fca5a5', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
-            🔒 Hidden Verification Details (Admin Only)
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Icon name="lock" size={14} />
+              Hidden Verification Details (Admin Only)
+            </span>
           </div>
           <div>{item.hidden_verification_details || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>Not provided</span>}</div>
         </div>

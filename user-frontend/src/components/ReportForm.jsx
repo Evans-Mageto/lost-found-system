@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
+import Icon from './Icon';
 
 const CATEGORIES = ['Electronics', 'Clothing', 'Books', 'Documents', 'Jewelry', 'Bags', 'Keys', 'Sports', 'Other'];
 
@@ -40,9 +41,12 @@ export default function ReportForm({ type }) {
       } else {
         data = await api.reportFound(fd);
         setSuccess('Found item reported successfully!');
-        if (data.possible_matches?.length > 0) setMatches(data.possible_matches);
+        const foundMatches = data.possible_matches || [];
+        if (foundMatches.length > 0) setMatches(foundMatches);
+        setTimeout(() => navigate('/my/reports'), foundMatches.length ? 5000 : 2000);
+        return;
       }
-      setTimeout(() => navigate('/my/reports'), matches.length ? 5000 : 2000);
+      setTimeout(() => navigate('/my/reports'), 2000);
     } catch (err) { setError(err.message); }
     finally { setLoading(false); }
   };
@@ -52,8 +56,8 @@ export default function ReportForm({ type }) {
   return (
     <div className="container" style={{ padding: '2rem 1.5rem', maxWidth: '700px' }}>
       <div className="page-header">
-        <h1>{isLost ? '😞 Report Lost Item' : '😊 Report Found Item'}</h1>
-        <p>{isLost ? 'Fill in the details of the item you lost.' : 'Help someone find their belongings.'}</p>
+        <h1>{isLost ? 'Report Lost Item' : 'Report Found Item'}</h1>
+        <p>{isLost ? 'Share enough detail for others to recognize your item.' : 'Help the owner identify and claim their belongings.'}</p>
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -62,7 +66,7 @@ export default function ReportForm({ type }) {
           {success}
           {matches.length > 0 && (
             <div style={{ marginTop: '0.75rem' }}>
-              <strong>🎯 Possible matches found:</strong>
+              <strong>Possible matches found:</strong>
               {matches.map(m => (
                 <div key={m.id} style={{ marginTop: '0.4rem', fontSize: '0.85rem' }}>
                   • <a href={`/items/${m.id}`}>{m.item_name}</a> — {m.location}
@@ -112,7 +116,10 @@ export default function ReportForm({ type }) {
 
           <div className="form-group">
             <label>
-              🔒 Hidden Verification Details
+              <span style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
+                <Icon name="lock" size={14} />
+                Hidden Verification Details
+              </span>
               <span style={{ color: 'var(--text2)', fontWeight: 400, marginLeft: '0.5rem' }}>(only admin can see this)</span>
             </label>
             <textarea value={form.hidden_verification_details} onChange={e => set('hidden_verification_details', e.target.value)}
@@ -122,7 +129,7 @@ export default function ReportForm({ type }) {
 
           <div className="form-group">
             <label>Photo (optional)</label>
-            <input type="file" accept="image/*" onChange={handleImg} style={{ padding: '0.5rem' }} />
+            <input className="file-input" type="file" accept="image/*" onChange={handleImg} style={{ padding: '0.6rem' }} />
             {preview && <img src={preview} alt="preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', marginTop: '0.75rem' }} />}
           </div>
 

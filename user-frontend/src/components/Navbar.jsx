@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Icon from './Icon';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -10,7 +11,10 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="navbar-brand">🔍 CampusFind</Link>
+        <Link to="/" className="navbar-brand">
+          <span className="brand-mark"><Icon name="search" size={18} /></span>
+          CampusFind
+        </Link>
         <div className="navbar-links">
           <Link to="/search">Browse Items</Link>
           {user ? (
