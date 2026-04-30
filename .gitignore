@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables
+backend/.env
+
+# Build outputs
+*/dist/
+
+# Uploads folder
+backend/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
