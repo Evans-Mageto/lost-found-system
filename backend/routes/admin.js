@@ -43,7 +43,7 @@ router.get('/dashboard', async (req, res) => {
 router.get('/users', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, full_name, email, role, is_active, created_at FROM users ORDER BY created_at DESC`
+      `SELECT id, full_name, email, phone, role, is_active, created_at FROM users ORDER BY created_at DESC`
     );
     res.json(result.rows);
   } catch (err) {

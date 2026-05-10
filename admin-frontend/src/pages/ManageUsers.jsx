@@ -41,8 +41,10 @@ export default function ManageUsers() {
 
   const filtered = users.filter(u =>
     u.full_name.toLowerCase().includes(search.toLowerCase()) ||
-    u.email.toLowerCase().includes(search.toLowerCase())
+    u.email.toLowerCase().includes(search.toLowerCase()) ||
+    (u.phone || '').toLowerCase().includes(search.toLowerCase())
   );
+
 
   if (loading) return <div className="loading"><div className="spinner"></div></div>;
 
@@ -60,7 +62,7 @@ export default function ManageUsers() {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name or email..."
+          placeholder="Search by name, email or phone..."
           style={{ flex: 1, maxWidth: '380px' }}
         />
       </div>
@@ -72,6 +74,7 @@ export default function ManageUsers() {
               <th>ID</th>
               <th>Full Name</th>
               <th>Email</th>
+              <th>Phone</th>
               <th>Role</th>
               <th>Status</th>
               <th>Joined</th>
@@ -89,6 +92,7 @@ export default function ManageUsers() {
                   )}
                 </td>
                 <td style={{ color: 'var(--text2)', fontSize: '0.875rem' }}>{user.email}</td>
+                <td style={{ color: 'var(--text2)', fontSize: '0.875rem' }}>{user.phone || '-'}</td>
                 <td><span className={`badge badge-${user.role}`}>{user.role}</span></td>
                 <td>
                   <span style={{

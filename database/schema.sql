@@ -10,6 +10,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(150) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(30),
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,

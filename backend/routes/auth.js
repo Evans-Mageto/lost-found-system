@@ -18,6 +18,7 @@ const generateToken = (user) =>
 router.post('/register', [
   body('full_name').trim().notEmpty().withMessage('Full name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
+  body('phone').optional({ checkFalsy: true }).isMobilePhone('any').withMessage('Invalid phone number'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('confirm_password').custom((val, { req }) => {
     if (val !== req.body.password) throw new Error('Passwords do not match');
@@ -27,7 +28,7 @@ router.post('/register', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { full_name, email, password } = req.body;
+  const { full_name, email, password, phone } = req.body;
   try {
     const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
     if (existing.rows.length > 0)
@@ -35,9 +36,9 @@ router.post('/register', [
 
     const password_hash = await bcrypt.hash(password, 12);
     const result = await pool.query(
-      `INSERT INTO users (full_name, email, password_hash, role)
-       VALUES ($1, $2, $3, 'user') RETURNING id, full_name, email, role`,
-      [full_name, email, password_hash]
+      `INSERT INTO users (full_name, email, phone, password_hash, role)
+       VALUES ($1, $2, $3, $4, 'user') RETURNING id, full_name, email, phone, role`,
+      [full_name, email, phone || null, password_hash]
     );
     const user = result.rows[0];
     const token = generateToken(user);
@@ -68,7 +69,7 @@ router.post('/login', [
     if (!match) return res.status(401).json({ error: 'Invalid email or password.' });
 
     const token = generateToken(user);
-    res.json({ token, user: { id: user.id, full_name: user.full_name, email: user.email, role: user.role } });
+    res.json({ token, user: { id: user.id, full_name: user.full_name, email: user.email, phone: user.phone, role: user.role } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -103,7 +104,7 @@ router.post('/admin/login', [
 router.get('/me', authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, full_name, email, role, created_at FROM users WHERE id = $1',
+      'SELECT id, full_name, email, phone, role, created_at FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!result.rows[0]) return res.status(404).json({ error: 'User not found.' });

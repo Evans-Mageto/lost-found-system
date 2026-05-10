@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ full_name: '', email: '', password: '', confirm_password: '' });
+  const [form, setForm] = useState({ full_name: '', email: '', phone: '', password: '', confirm_password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -39,6 +39,10 @@ export default function Register() {
             <div className="form-group">
               <label>Email</label>
               <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@email.com" required />
+            </div>
+            <div className="form-group">
+              <label>Phone</label>
+              <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="e.g. +1234567890" />
             </div>
             <div className="form-group">
               <label>Password</label>
